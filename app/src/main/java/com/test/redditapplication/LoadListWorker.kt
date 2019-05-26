@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
+import com.test.redditapplication.db.TopResponse
 import java.net.URL
 
 class LoadListWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
