@@ -1,18 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View"/>
+        <import type="android.text.TextUtils"/>
         <variable name="post" type="com.test.redditapplication.db.Post"/>
-
     </data>
 
-    <LinearLayout
-            android:orientation="vertical"
+    <androidx.cardview.widget.CardView
+            style="@style/CardViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:text="@{post.title}"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </LinearLayout>
+            <ImageView
+                    android:id="@+id/tvThumbnail"
+                    android:layout_width="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/pbImageLoading"
+                    android:visibility="@{TextUtils.isEmpty(post.localThumbnail) ? View.GONE : View.VISIBLE}"
+                    android:layout_height="0dp"/>
+
+            <ProgressBar
+                    android:id="@+id/pbImageLoading"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/tvThumbnail"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:visibility="@{(TextUtils.isEmpty(post.localThumbnail) &amp;&amp; !TextUtils.isEmpty(post.thumbnail)) ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toTopOf="@+id/tvTitle"/>
+
+            <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/pbImageLoading"
+                    android:text="@{post.title}"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
 </layout>

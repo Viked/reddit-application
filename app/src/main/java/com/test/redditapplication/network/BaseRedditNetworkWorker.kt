@@ -38,7 +38,8 @@ abstract class BaseRedditNetworkWorker(context: Context, workerParams: WorkerPar
             comments = it.data?.num_comments ?: 0,
             viewCount = it.data?.view_count ?: 0,
             score = it.data?.score ?: 0,
-            imageUrl = it.data?.preview?.images?.firstOrNull()?.source?.url ?: ""
+            imageUrl = it.data?.preview?.images?.firstOrNull()?.source?.url ?: "",
+            localThumbnail = ""
         )
     } ?: listOf()
 

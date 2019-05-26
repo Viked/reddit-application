@@ -10,6 +10,7 @@ data class Post(
     val author: String,
     val title: String,
     val thumbnail: String,
+    val localThumbnail: String,
     val imageUrl: String,
     val url: String,
     val created: Date,

@@ -10,18 +10,21 @@ import com.test.redditapplication.network.loadNextPage
 
 class MainViewModel(private val postsDao: TopPostsDao) : ViewModel() {
 
-    val isLoading: LiveData<Boolean> = getLoadingState()
+    val isLoading: LiveData<Boolean> by lazy { getLoadingState() }
 
-    val list: LiveData<List<Post>> by lazy {
-        postsDao.allPostLiveData()
-    }
+    val list: LiveData<List<Post>> by lazy { postsDao.allPostLiveData() }
 
     fun onRefresh() {
         fetchTopPosts()
     }
 
     fun onLoadNextPage() {
-        loadNextPage()
+        if (isLoading.value == true) return
+        if (list.value?.isEmpty() == true) {
+            fetchTopPosts()
+        } else {
+            loadNextPage()
+        }
     }
 
 }
