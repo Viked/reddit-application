@@ -10,6 +10,6 @@ class PostsPaginationCallback : PagedList.BoundaryCallback<Post>() {
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Post) {
-        loadNextPage(itemAtEnd.id)
+//        loadNextPage(itemAtEnd.id)
     }
 }

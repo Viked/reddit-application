@@ -14,5 +14,6 @@ data class Post(
     val url: String,
     val created: Date,
     val comments: Int,
-    val score: Int
+    val score: Int,
+    val viewCount: Int
 )

@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -23,18 +25,6 @@ android {
     }
     dataBinding {
         enabled = true
-    }
-    configurations.all {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            def requested = details.requested
-            if (requested.group == "com.android.support") {
-                if (!requested.name.startsWith("multidex")) {
-                    details.useVersion "26.+"
-                }
-            }
-        }
-
-        all*.exclude group: 'com.google.guava', module: 'listenablefuture'
     }
 }
 
@@ -57,8 +47,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.0.0"
 
-    implementation "androidx.work:work-runtime:2.0.1"
-    implementation "androidx.work:work-runtime-ktx:2.0.1"
+    implementation ("androidx.work:work-runtime:2.0.1") {
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
+    implementation ("androidx.work:work-runtime-ktx:2.0.1") {
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
 
     implementation "androidx.multidex:multidex:2.0.1"
 

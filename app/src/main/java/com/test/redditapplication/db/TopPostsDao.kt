@@ -1,18 +1,24 @@
 package com.test.redditapplication.db
 
 import androidx.paging.DataSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
-interface TopPostsDao {
+abstract class TopPostsDao {
 
     @Query("SELECT * FROM Post ORDER BY score DESC")
-    fun allPostById(): DataSource.Factory<String, Post>
+    abstract fun allPostById(): DataSource.Factory<Int, Post>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(posts: List<Post>)
+    abstract fun insert(posts: List<Post>)
+
+    @Transaction
+    open fun insertToTop(posts: List<Post>) {
+        deleteAllPosts()
+        insert(posts)
+    }
+
+    @Query("DELETE FROM Post")
+    abstract fun deleteAllPosts()
 
 }
