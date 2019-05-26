@@ -2,24 +2,26 @@ package com.test.redditapplication
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.paging.PagedList
-import androidx.paging.toLiveData
 import com.test.redditapplication.db.Post
 import com.test.redditapplication.db.TopPostsDao
-import com.test.redditapplication.network.PostsPaginationCallback
 import com.test.redditapplication.network.fetchTopPosts
 import com.test.redditapplication.network.getLoadingState
+import com.test.redditapplication.network.loadNextPage
 
 class MainViewModel(private val postsDao: TopPostsDao) : ViewModel() {
 
     val isLoading: LiveData<Boolean> = getLoadingState()
 
-    val list: LiveData<PagedList<Post>> by lazy {
-        postsDao.allPostById().toLiveData(PAGE_SIZE, boundaryCallback = PostsPaginationCallback())
+    val list: LiveData<List<Post>> by lazy {
+        postsDao.allPostLiveData()
     }
 
     fun onRefresh() {
         fetchTopPosts()
+    }
+
+    fun onLoadNextPage() {
+        loadNextPage()
     }
 
 }

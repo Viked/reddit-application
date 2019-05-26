@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
-import com.test.redditapplication.LAST_ID
 import com.test.redditapplication.db.Post
 import com.test.redditapplication.db.TopPostsDao
 import com.test.redditapplication.getPostDao
@@ -14,25 +13,17 @@ import java.net.URL
 import java.util.*
 import kotlin.math.roundToLong
 
-class LoadListWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+abstract class BaseRedditNetworkWorker(context: Context, workerParams: WorkerParameters) :
+    Worker(context, workerParams) {
 
-    private val lastId: String by lazy {
-        workerParams.inputData.getString(LAST_ID) ?: ""
-    }
+    abstract fun insert(dao: TopPostsDao, list: List<Post>)
 
-    private val postsDao: TopPostsDao by lazy { context.getPostDao() }
+    val postsDao: TopPostsDao by lazy { context.getPostDao() }
 
-    private fun getRequestUrl(): String {
-        val builder = Uri.Builder().scheme("https")
-            .authority("www.reddit.com")
-            .appendPath("top.json")
+    open fun getRequestBuilder(): Uri.Builder = Uri.Builder().scheme("https")
+        .authority("www.reddit.com")
+        .appendPath("top.json")
 
-        if (lastId.isNotBlank()) {
-            builder.appendQueryParameter("after", lastId)
-        }
-
-        return builder.build().toString()
-    }
 
     private fun parseResponse(response: String): TopResponse = Gson().fromJson(response, TopResponse::class.java)
 
@@ -52,7 +43,7 @@ class LoadListWorker(context: Context, workerParams: WorkerParameters) : Worker(
     } ?: listOf()
 
     override fun doWork(): Result {
-        val request = getRequestUrl()
+        val request = getRequestBuilder().build().toString()
         val url = URL(request)
 
         val rawResponse = try {
@@ -65,11 +56,7 @@ class LoadListWorker(context: Context, workerParams: WorkerParameters) : Worker(
         if (rawResponse.isBlank()) return Result.failure()
 
         val posts = parseResponse(rawResponse).mapToDbEntity()
-        if (lastId.isNotBlank()) {
-            postsDao.insert(posts)
-        } else {
-            postsDao.insertToTop(posts)
-        }
+        insert(postsDao, posts)
         return Result.success()
     }
 

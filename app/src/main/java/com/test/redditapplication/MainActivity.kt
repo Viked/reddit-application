@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.test.redditapplication.databinding.ActivityMainBinding
+import com.test.redditapplication.ui.LastPositionScrollObserver
 import com.test.redditapplication.ui.PostListAdapter
 
 class MainActivity : AppCompatActivity() {
@@ -29,5 +30,9 @@ class MainActivity : AppCompatActivity() {
         binding.rvPosts.layoutManager = LinearLayoutManager(this)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+
+        LastPositionScrollObserver(binding.rvPosts) {
+            viewModel.onLoadNextPage()
+        }.setLifecycleOwner(this)
     }
 }

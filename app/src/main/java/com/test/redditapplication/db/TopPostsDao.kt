@@ -1,13 +1,13 @@
 package com.test.redditapplication.db
 
-import androidx.paging.DataSource
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 abstract class TopPostsDao {
 
     @Query("SELECT * FROM Post ORDER BY score DESC")
-    abstract fun allPostById(): DataSource.Factory<Int, Post>
+    abstract fun allPostLiveData(): LiveData<List<Post>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(posts: List<Post>)
@@ -20,5 +20,8 @@ abstract class TopPostsDao {
 
     @Query("DELETE FROM Post")
     abstract fun deleteAllPosts()
+
+    @Query("SELECT * FROM Post ORDER BY score ASC LIMIT 1")
+    abstract fun getLastPost(): Post
 
 }
