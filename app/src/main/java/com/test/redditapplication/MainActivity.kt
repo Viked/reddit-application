@@ -2,21 +2,18 @@ package com.test.redditapplication
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
+import androidx.lifecycle.ViewModelProviders
 
 class MainActivity : AppCompatActivity() {
+
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProviders.of(this, SimpleMainViewModelFactory(this))
+            .get(MainViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        WorkManager.getInstance()
-            .beginUniqueWork(
-                LOAD_LIST_WORK_NAME,
-                ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(LoadListWorker::class.java)
-            ).enqueue()
     }
 }

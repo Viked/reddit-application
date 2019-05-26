@@ -1,4 +1,4 @@
-package com.test.redditapplication
+package com.test.redditapplication.network
 
 import android.content.Context
 import android.net.Uri
@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
-import com.test.redditapplication.db.TopResponse
 import java.net.URL
 
 class LoadListWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
@@ -42,6 +41,5 @@ class LoadListWorker(context: Context, workerParams: WorkerParameters) : Worker(
         Log.d(javaClass.simpleName, "Reddit response: $response")
         return Result.success()
     }
-
 
 }

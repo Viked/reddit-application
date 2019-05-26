@@ -1,4 +1,4 @@
-package com.test.redditapplication.db
+package com.test.redditapplication.network
 
 data class TopResponse(
     val `data`: TopListPage,
