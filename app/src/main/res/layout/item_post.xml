@@ -19,13 +19,16 @@
 
             <ImageView
                     android:id="@+id/tvThumbnail"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@+id/pbImageLoading"
+                    android:scaleType="centerCrop"
                     android:visibility="@{TextUtils.isEmpty(post.localThumbnail) ? View.GONE : View.VISIBLE}"
-                    android:layout_height="0dp"/>
+                    android:adjustViewBounds="true"
+                    app:file="@{post.localThumbnail}"/>
 
             <ProgressBar
                     android:id="@+id/pbImageLoading"

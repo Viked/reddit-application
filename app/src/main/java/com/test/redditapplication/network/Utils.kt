@@ -24,11 +24,12 @@ fun getLoadingState(): LiveData<Boolean> {
 }
 
 fun fetchTopPosts() {
+    WorkManager.getInstance().cancelAllWorkByTag(NETWORK_WORK_TAG)
     WorkManager.getInstance().beginUniqueWork(
         LOAD_LIST_WORK_NAME,
         ExistingWorkPolicy.REPLACE,
         getNetworkRequest<FetchListWorker>()
-    ).enqueue()
+    ).then(getNetworkRequest<LoadImagesWorker>()).enqueue()
 }
 
 fun loadNextPage() {
@@ -36,5 +37,5 @@ fun loadNextPage() {
         LOAD_NEXT_PAGE_WORK_NAME,
         ExistingWorkPolicy.KEEP,
         getNetworkRequest<LoadNextPageWorker>()
-    ).enqueue()
+    ).then(getNetworkRequest<LoadImagesWorker>()).enqueue()
 }
