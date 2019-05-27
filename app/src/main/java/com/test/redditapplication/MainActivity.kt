@@ -1,9 +1,12 @@
 package com.test.redditapplication
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = viewModel
 
         LastPositionScrollObserver(binding.rvPosts) {
-            viewModel.onLoadNextPage()
+            loadListIfCan()
         }.setLifecycleOwner(this)
 
     }
@@ -52,10 +55,30 @@ class MainActivity : AppCompatActivity() {
 
     private fun setList(list: List<Post>?) {
         list ?: return
-        val wasEmpty = adapter.differ.currentList.isEmpty()
+        if (list.isEmpty()) {
+            loadListIfCan()
+            return
+        }
+
+        val wasEmpty = adapter.itemCount == 0
         adapter.postList(list)
         if (wasEmpty) {
             ScrollStateObserver(binding.rvPosts).setLifecycleOwner(this)
+        }
+    }
+
+    private fun loadListIfCan() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            viewModel.onLoadNextPage()
+        } else {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION_CODE)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == WRITE_PERMISSION_CODE && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+            loadListIfCan()
         }
     }
 

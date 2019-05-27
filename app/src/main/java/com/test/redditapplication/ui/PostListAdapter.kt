@@ -11,7 +11,7 @@ typealias OpenLink = (Post) -> Unit
 
 class PostListAdapter(private val openPost: OpenLink, private val openImage: OpenLink) : RecyclerView.Adapter<PostViewHolder>() {
 
-    val differ: AsyncListDiffer<Post> by lazy { AsyncListDiffer(this, PostDifferCallback()) }
+    private val differ: AsyncListDiffer<Post> by lazy { AsyncListDiffer(this, PostDifferCallback()) }
 
     fun postList(list: List<Post>) = differ.submitList(list)
 
