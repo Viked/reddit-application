@@ -14,32 +14,31 @@ import java.util.*
 import kotlin.math.roundToLong
 
 abstract class BaseRedditNetworkWorker(context: Context, workerParams: WorkerParameters) :
-    Worker(context, workerParams) {
+        Worker(context, workerParams) {
 
     abstract fun insert(dao: TopPostsDao, list: List<Post>)
 
     val postsDao: TopPostsDao by lazy { context.getPostDao() }
 
     open fun getRequestBuilder(): Uri.Builder = Uri.Builder().scheme("https")
-        .authority("www.reddit.com")
-        .appendPath("top.json")
+            .authority("www.reddit.com")
+            .appendPath("top.json")
 
 
     private fun parseResponse(response: String): TopResponse = Gson().fromJson(response, TopResponse::class.java)
 
     private fun TopResponse.mapToDbEntity() = data?.children?.map {
         Post(
-            id = it.data?.name ?: "",
-            author = it.data?.author ?: "",
-            title = it.data?.title ?: "",
-            thumbnail = it.data?.thumbnail ?: "",
-            url = it.data?.url ?: "",
-            created = Date(it.data?.created_utc?.roundToLong() ?: 0),
-            comments = it.data?.num_comments ?: 0,
-            viewCount = it.data?.view_count ?: 0,
-            score = it.data?.score ?: 0,
-            imageUrl = it.data?.preview?.images?.firstOrNull()?.source?.url ?: "",
-            localThumbnail = ""
+                id = it.data?.name ?: "",
+                author = it.data?.author ?: "",
+                title = it.data?.title ?: "",
+                thumbnail = it.data?.thumbnail ?: "",
+                url = it.data?.url ?: "",
+                created = Date((it.data?.created_utc?.roundToLong() ?: 0) * 1000),
+                comments = it.data?.num_comments ?: 0,
+                score = it.data?.score ?: 0,
+                imageUrl = it.data?.preview?.images?.firstOrNull()?.source?.url ?: "",
+                localThumbnail = ""
         )
     } ?: listOf()
 

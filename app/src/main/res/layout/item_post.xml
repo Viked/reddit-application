@@ -1,54 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View"/>
-        <import type="android.text.TextUtils"/>
-        <variable name="post" type="com.test.redditapplication.db.Post"/>
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="post"
+            type="com.test.redditapplication.db.Post" />
     </data>
 
     <androidx.cardview.widget.CardView
-            style="@style/CardViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        style="@style/CardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <ImageView
-                    android:id="@+id/tvThumbnail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/pbImageLoading"
-                    android:scaleType="centerCrop"
-                    android:visibility="@{TextUtils.isEmpty(post.localThumbnail) ? View.GONE : View.VISIBLE}"
-                    android:adjustViewBounds="true"
-                    app:file="@{post.localThumbnail}"/>
+                android:id="@+id/tvThumbnail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:visibility="@{TextUtils.isEmpty(post.localThumbnail) ? View.GONE : View.VISIBLE}"
+                app:file="@{post.localThumbnail}"
+                app:layout_constraintBottom_toTopOf="@+id/pbImageLoading"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ProgressBar
-                    android:id="@+id/pbImageLoading"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/tvThumbnail"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:visibility="@{(TextUtils.isEmpty(post.localThumbnail) &amp;&amp; !TextUtils.isEmpty(post.thumbnail)) ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toTopOf="@+id/tvTitle"/>
+                android:id="@+id/pbImageLoading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="@{(TextUtils.isEmpty(post.localThumbnail) &amp;&amp; !TextUtils.isEmpty(post.thumbnail)) ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toTopOf="@+id/tvTitle"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvThumbnail" />
 
             <TextView
-                    android:id="@+id/tvTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pbImageLoading"
-                    android:text="@{post.title}"/>
+                android:id="@+id/tvTitle"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/text_horizontal_margin"
+                android:layout_marginTop="@dimen/text_vertical_margin"
+                android:layout_marginRight="@dimen/text_horizontal_margin"
+                android:text="@{post.title}"
+                app:layout_constraintBottom_toTopOf="@+id/tvAuthor"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pbImageLoading" />
 
+            <TextView
+                android:id="@+id/tvAuthor"
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/text_horizontal_margin"
+                android:layout_marginTop="@dimen/text_vertical_margin"
+                android:layout_marginRight="@dimen/text_horizontal_margin"
+                android:drawableLeft="@drawable/account_circle_outline"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:text="@{post.author}"
+                app:layout_constraintBottom_toBottomOf="@+id/barrier"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/tvCreated"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+            <TextView
+                android:id="@+id/tvCreated"
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/text_horizontal_margin"
+                android:layout_marginTop="@dimen/text_vertical_margin"
+                android:layout_marginRight="@dimen/text_horizontal_margin"
+                android:gravity="center_vertical"
+                app:date="@{post.created}"
+                app:layout_constraintBottom_toBottomOf="@+id/barrier"
+                app:layout_constraintLeft_toRightOf="@+id/tvAuthor"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="tvAuthor,tvCreated" />
+
+            <TextView
+                android:id="@+id/tvRating"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/text_vertical_margin"
+                android:layout_marginBottom="@dimen/text_vertical_margin"
+                android:drawableLeft="@drawable/podium"
+                android:drawablePadding="@dimen/text_horizontal_margin"
+                android:gravity="center"
+                android:text="@{String.valueOf(post.score)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/tvComments"
+                app:layout_constraintTop_toBottomOf="@+id/barrier" />
+
+            <TextView
+                android:id="@+id/tvComments"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/text_vertical_margin"
+                android:layout_marginBottom="@dimen/text_vertical_margin"
+                android:drawableLeft="@drawable/comment_text_multiple_outline"
+                android:drawablePadding="@dimen/text_horizontal_margin"
+                android:gravity="center"
+                android:text="@{String.valueOf(post.comments)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/tvRating"
+                app:layout_constraintRight_toLeftOf="@+id/bOpenUrl"
+                app:layout_constraintTop_toBottomOf="@+id/barrier" />
+
+            <Button
+                android:id="@+id/bOpenUrl"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/open_url"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/barrier" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
