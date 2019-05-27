@@ -2,10 +2,14 @@ package com.test.redditapplication.network
 
 import android.content.Context
 import android.net.Uri
+import android.text.Html
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
+import com.test.redditapplication.REDDIT
+import com.test.redditapplication.SCHEME
+import com.test.redditapplication.TOP_POSTS_PATH
 import com.test.redditapplication.db.Post
 import com.test.redditapplication.db.TopPostsDao
 import com.test.redditapplication.getPostDao
@@ -20,10 +24,9 @@ abstract class BaseRedditNetworkWorker(context: Context, workerParams: WorkerPar
 
     val postsDao: TopPostsDao by lazy { context.getPostDao() }
 
-    open fun getRequestBuilder(): Uri.Builder = Uri.Builder().scheme("https")
-            .authority("www.reddit.com")
-            .appendPath("top.json")
-
+    open fun getRequestBuilder(): Uri.Builder = Uri.Builder().scheme(SCHEME)
+            .authority(REDDIT)
+            .appendPath(TOP_POSTS_PATH)
 
     private fun parseResponse(response: String): TopResponse = Gson().fromJson(response, TopResponse::class.java)
 
@@ -32,15 +35,19 @@ abstract class BaseRedditNetworkWorker(context: Context, workerParams: WorkerPar
                 id = it.data?.name ?: "",
                 author = it.data?.author ?: "",
                 title = it.data?.title ?: "",
-                thumbnail = it.data?.thumbnail ?: "",
-                url = it.data?.url ?: "",
+                thumbnail = it.data?.thumbnail.decodeUrl(),
+                url = "$SCHEME://$REDDIT${it.data?.permalink}",
                 created = Date((it.data?.created_utc?.roundToLong() ?: 0) * 1000),
                 comments = it.data?.num_comments ?: 0,
                 score = it.data?.score ?: 0,
-                imageUrl = it.data?.preview?.images?.firstOrNull()?.source?.url ?: "",
+                imageUrl = it.data?.preview?.images?.firstOrNull()?.source?.url.decodeUrl(),
                 localThumbnail = ""
         )
     } ?: listOf()
+
+    private fun String?.decodeUrl(): String = if (!isNullOrBlank()) {
+        Html.fromHtml(this).toString()
+    } else ""
 
     override fun doWork(): Result {
         val request = getRequestBuilder().build().toString()

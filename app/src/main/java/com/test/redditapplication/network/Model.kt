@@ -24,7 +24,7 @@ data class Link(
         val score: Int?,
         val thumbnail: String?,
         val title: String?,
-        val url: String?)
+        val permalink: String?)
 
 data class Preview(
         val images: List<Image>?
