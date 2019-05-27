@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.test.redditapplication.databinding.ActivityMainBinding
 import com.test.redditapplication.db.Post
 import com.test.redditapplication.ui.LastPositionScrollObserver
 import com.test.redditapplication.ui.PostListAdapter
+import com.test.redditapplication.ui.ScrollStateObserver
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,15 +29,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.list.observe(this, Observer { adapter.postList(it ?: listOf()) })
+        viewModel.list.observe(this, Observer { setList(it) })
         binding.rvPosts.adapter = adapter
-        binding.rvPosts.layoutManager = LinearLayoutManager(this)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
         LastPositionScrollObserver(binding.rvPosts) {
             viewModel.onLoadNextPage()
         }.setLifecycleOwner(this)
+
     }
 
     private fun openImage(post: Post) {
@@ -48,6 +48,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun openUrl(url: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+
+    private fun setList(list: List<Post>?) {
+        list ?: return
+        val wasEmpty = adapter.differ.currentList.isEmpty()
+        adapter.postList(list)
+        if (wasEmpty) {
+            ScrollStateObserver(binding.rvPosts).setLifecycleOwner(this)
+        }
     }
 
 }

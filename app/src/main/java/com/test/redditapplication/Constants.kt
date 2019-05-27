@@ -9,3 +9,5 @@ const val SCROLL_DIRECTION = 1
 const val SCHEME = "https"
 const val REDDIT = "www.reddit.com"
 const val TOP_POSTS_PATH = "top.json"
+
+const val SCROLL_STATE_KEY = "post_scroll"
