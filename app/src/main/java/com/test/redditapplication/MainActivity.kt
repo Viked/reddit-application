@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.test.redditapplication.databinding.ActivityMainBinding
 import com.test.redditapplication.db.Post
+import com.test.redditapplication.network.loadImage
 import com.test.redditapplication.ui.LastPositionScrollObserver
 import com.test.redditapplication.ui.PostListAdapter
 import com.test.redditapplication.ui.ScrollStateObserver
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
                 .get(MainViewModel::class.java)
     }
 
-    private val adapter: PostListAdapter by lazy { PostListAdapter(this::openPost, this::openImage) }
+    private val adapter: PostListAdapter by lazy { PostListAdapter(this::openPost, this::openImage, ::loadImage) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
